@@ -1,0 +1,83 @@
+{
+    "F1TENTH_Single": {
+        "checkpoints": [
+            {
+                "steps": 4499854,
+                "file_path": "results/9/F1TENTH_Single/F1TENTH_Single-4499854.onnx",
+                "reward": null,
+                "creation_time": 1758887953.6254919,
+                "auxillary_file_paths": [
+                    "results/9/F1TENTH_Single/F1TENTH_Single-4499854.pt"
+                ]
+            },
+            {
+                "steps": 4999390,
+                "file_path": "results/9/F1TENTH_Single/F1TENTH_Single-4999390.onnx",
+                "reward": 29.449899673461914,
+                "creation_time": 1758889784.518068,
+                "auxillary_file_paths": [
+                    "results/9/F1TENTH_Single/F1TENTH_Single-4999390.pt"
+                ]
+            },
+            {
+                "steps": 5499797,
+                "file_path": "results/9/F1TENTH_Single/F1TENTH_Single-5499797.onnx",
+                "reward": 29.500497817993164,
+                "creation_time": 1758891621.109407,
+                "auxillary_file_paths": [
+                    "results/9/F1TENTH_Single/F1TENTH_Single-5499797.pt"
+                ]
+            },
+            {
+                "steps": 5999969,
+                "file_path": "results/9/F1TENTH_Single/F1TENTH_Single-5999969.onnx",
+                "reward": 29.57449722290039,
+                "creation_time": 1758893457.6205099,
+                "auxillary_file_paths": [
+                    "results/9/F1TENTH_Single/F1TENTH_Single-5999969.pt"
+                ]
+            },
+            {
+                "steps": 6499717,
+                "file_path": "results/9/F1TENTH_Single/F1TENTH_Single-6499717.onnx",
+                "reward": 29.671998977661133,
+                "creation_time": 1758895290.734407,
+                "auxillary_file_paths": [
+                    "results/9/F1TENTH_Single/F1TENTH_Single-6499717.pt"
+                ]
+            },
+            {
+                "steps": 6999519,
+                "file_path": "results/9/F1TENTH_Single/F1TENTH_Single-6999519.onnx",
+                "reward": 29.841297149658203,
+                "creation_time": 1758897126.012148,
+                "auxillary_file_paths": [
+                    "results/9/F1TENTH_Single/F1TENTH_Single-6999519.pt"
+                ]
+            },
+            {
+                "steps": 7000267,
+                "file_path": "results/9/F1TENTH_Single/F1TENTH_Single-7000267.onnx",
+                "reward": 29.818798065185547,
+                "creation_time": 1758897126.13479,
+                "auxillary_file_paths": [
+                    "results/9/F1TENTH_Single/F1TENTH_Single-7000267.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 7000267,
+            "file_path": "results/9/F1TENTH_Single.onnx",
+            "reward": 29.818798065185547,
+            "creation_time": 1758897126.13479,
+            "auxillary_file_paths": [
+                "results/9/F1TENTH_Single/F1TENTH_Single-7000267.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "1.11.0"
+    }
+}
