@@ -12,7 +12,7 @@ behaviors:
       learning_rate_schedule: linear
     network_settings:
       normalize: true
-      hidden_units: 256
+      hidden_units: 512
       num_layers: 3
       vis_encode_type: simple
     reward_signals:
@@ -24,6 +24,6 @@ behaviors:
         gamma: 0.99
         encoding_size: 256
     keep_checkpoints: 7
-    max_steps: 2e6
+    max_steps: 7e6
     time_horizon: 1000
     summary_freq: 10000

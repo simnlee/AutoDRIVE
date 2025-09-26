@@ -41,6 +41,30 @@ public class F1TenthRacing : Agent
     private bool CheckpointPassingFlag = false; // Checkpoint passing flag
     private bool LapTimeReducedFlag = false; // Best lap time flag
 
+    void Start()
+    {
+        // Optimize Ray Perception Sensor for track boundaries only
+        RayPerceptionSensorComponent3D rayPerception = GetComponent<RayPerceptionSensorComponent3D>();
+        if (rayPerception != null)
+        {
+            // Only detect track walls (layer 0), ignore checkpoints/finish lines
+            rayPerception.RayLayerMask = (1 << 0);
+            rayPerception.DetectableTags.Clear();
+            
+            // Lower sensor height for better wall detection at ground level
+            if (rayPerception.StartVerticalOffset > 0.2f)
+                rayPerception.StartVerticalOffset = 0.1f;
+            if (rayPerception.EndVerticalOffset > 0.2f)
+                rayPerception.EndVerticalOffset = 0.1f;
+                
+            Debug.Log($"Ray Sensor configured: {rayPerception.RaysPerDirection * 2 + 1} rays, length {rayPerception.RayLength}m");
+        }
+        else
+        {
+            Debug.LogError("No RayPerceptionSensorComponent3D found! Agent will be blind to walls!");
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         CollisionFlag = true; // Collision detected
@@ -89,8 +113,72 @@ public class F1TenthRacing : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
+        // Vehicle speed
         EV_Speed = (float)System.Math.Abs(System.Math.Round(EV_ActuatorController.Vehicle.transform.InverseTransformDirection(EV_ActuatorController.Vehicle.GetComponent<Rigidbody>().velocity).z,2));
-        sensor.AddObservation((float)System.Math.Round(EV_Speed, 2)); // Speed of ego-vehicle (m/s)
+        sensor.AddObservation((float)System.Math.Round(EV_Speed, 2)); // [0] Speed
+
+        // Vehicle orientation (forward direction)
+        sensor.AddObservation(transform.forward.x); // [1] Forward X
+        sensor.AddObservation(transform.forward.z); // [2] Forward Z
+
+        // Vehicle velocity (local coordinate system)
+        Vector3 localVelocity = transform.InverseTransformDirection(EV_Rigidbody.velocity);
+        sensor.AddObservation(localVelocity.x); // [3] Side velocity
+        sensor.AddObservation(localVelocity.z); // [4] Forward velocity
+
+        // Angular velocity
+        sensor.AddObservation(EV_Rigidbody.angularVelocity.y); // [5] Yaw rotation
+
+        // Current control inputs
+        sensor.AddObservation(EV_ActuatorController.CurrentSteeringAngle); // [6] Steering (-1 to 1)
+        sensor.AddObservation(EV_ActuatorController.CurrentThrottle); // [7] Throttle (0 to 1)
+
+        // Comprehensive ray debug - test all directions around the car (every 2 seconds)
+        if (Time.fixedTime % 2.0f < 0.02f) 
+        {
+            Debug.Log("=== RAY DETECTION DEBUG ===");
+            Debug.Log($"Car Position: {transform.position}, Forward: {transform.forward}");
+            
+            int wallLayerMask = 1 << 0; // Only layer 0
+            Vector3 rayStart = transform.position + Vector3.up * 0.1f;
+            float maxDistance = 5f;
+            
+            // Define ray directions relative to car
+            Vector3[] rayDirections = {
+                transform.forward,           // Forward
+                transform.forward + transform.right * 0.5f,  // Forward-Right 
+                transform.right,             // Right
+                -transform.forward + transform.right * 0.5f, // Back-Right
+                -transform.forward,          // Back
+                -transform.forward - transform.right * 0.5f, // Back-Left
+                -transform.right,            // Left
+                transform.forward - transform.right * 0.5f   // Forward-Left
+            };
+            
+            string[] directionNames = {
+                "Forward", "Forward-Right", "Right", "Back-Right",
+                "Back", "Back-Left", "Left", "Forward-Left"
+            };
+            
+            for (int i = 0; i < rayDirections.Length; i++)
+            {
+                RaycastHit hit;
+                Vector3 direction = rayDirections[i].normalized;
+                
+                if (Physics.Raycast(rayStart, direction, out hit, maxDistance, wallLayerMask))
+                {
+                    Debug.Log($"  {directionNames[i]}: HIT {hit.collider.name} at {hit.distance:F1}m");
+                }
+                else
+                {
+                    Debug.Log($"  {directionNames[i]}: CLEAR (>{maxDistance}m)");
+                }
+            }
+            
+            Debug.Log("========================");
+        }
+
+        // Total: 8 VectorSensor observations + Ray Perception Sensor observations (automatic)
     }
 
     public override void OnActionReceived(ActionBuffers actions)
