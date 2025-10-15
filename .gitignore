@@ -1,0 +1,9 @@
+/AutoDRIVE Simulator.app/
+
+.DS_Store
+
+/ADSS Toolkit/autodrive_py/models/
+/ADSS Toolkit/autodrive_py/tensorboard_logs/
+
+# pycache
+**/__pycache__/
